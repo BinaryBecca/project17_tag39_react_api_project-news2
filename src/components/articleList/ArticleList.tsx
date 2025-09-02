@@ -27,30 +27,43 @@ export default function ArticleList(props: ArticleProps) {
 
   const [clickSearchButton, setClickSearchButton] = useState<boolean>(false)
 
+  // const [emptyFieldUserMessage, setEmptyFieldUserMessage] = useState<string>("")
+
   const searchInput = () => {
     setClickSearchButton(true)
   }
+  console.log(clickSearchButton)
 
-  useEffect(() => {
-    // ! auf searchfield/selectLanguage zugreifen
-    const fetchData = async () => {
-      // const url = `${BASE_URL}&apiKey=${myAPI}`
-      const url = `${BASE_URL}q=Apple&from=2025-08-15&sortBy=popularity&language=en&apiKey=${myAPI}`
-      const resp = await fetch(url)
-      const respInJson = await resp.json()
-      setData(respInJson.articles)
-      // console.log("respInJson", respInJson)
-      console.log("respInJson.articles", respInJson.articles)
-    }
-    // if (clickSearchButton) {
-    //   fetchData()
-    // }
-    fetchData()
-    // !
-    // if (searchInput) {
-    //   fetchData()
-    // }
-  }, [])
+  useEffect(
+    () => {
+      // ! auf searchfield/selectLanguage zugreifen
+      const fetchData = async () => {
+        // const url = `${BASE_URL}&apiKey=${myAPI}`
+        const url = `${BASE_URL}q=${searchField}&from=2025-08-15&sortBy=popularity&language=${selectLanguage}&apiKey=${myAPI}`
+        const resp = await fetch(url)
+        const respInJson = await resp.json()
+        setData(respInJson.articles)
+        if (searchField === "") {
+          alert("Please enter something into the search field")
+          return
+        }
+        // setData(respInJson.articles)
+        // console.log("respInJson", respInJson)
+        // console.log("respInJson.articles", respInJson.articles)
+      }
+      if (clickSearchButton) {
+        fetchData()
+        // console.log("FetchData:", fetchData())
+      }
+      // fetchData()
+      // !
+      // if (searchInput) {
+      //   fetchData()
+      // }
+    },
+    [clickSearchButton]
+    // [searchField, selectLanguage]
+  )
   return (
     <>
       <div className="flex flex-col items-center justify-center m-10 p-5 border bg-gray-100 gap-4">
@@ -111,7 +124,7 @@ export default function ArticleList(props: ArticleProps) {
             </div>
           </>
         ) : (
-          <p>No Article found</p>
+          <p className="flex items-center justify-center text-2xl">No Article found</p>
         )}
       </div>
     </>
