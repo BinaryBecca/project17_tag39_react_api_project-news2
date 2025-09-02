@@ -30,6 +30,10 @@ export default function ArticleList(props: ArticleProps) {
   // const [emptyFieldUserMessage, setEmptyFieldUserMessage] = useState<string>("")
 
   const searchInput = () => {
+    if (searchField === "") {
+      alert("Please enter something into the search field")
+      return
+    }
     setClickSearchButton(true)
   }
   console.log(clickSearchButton)
@@ -43,10 +47,6 @@ export default function ArticleList(props: ArticleProps) {
         const resp = await fetch(url)
         const respInJson = await resp.json()
         setData(respInJson.articles)
-        if (searchField === "") {
-          alert("Please enter something into the search field")
-          return
-        }
         // setData(respInJson.articles)
         // console.log("respInJson", respInJson)
         // console.log("respInJson.articles", respInJson.articles)
@@ -64,6 +64,7 @@ export default function ArticleList(props: ArticleProps) {
     [clickSearchButton]
     // [searchField, selectLanguage]
   )
+
   return (
     <>
       <div className="flex flex-col items-center justify-center m-10 p-5 border bg-gray-100 gap-4">
