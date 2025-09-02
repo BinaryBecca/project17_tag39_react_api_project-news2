@@ -27,27 +27,25 @@ export default function ArticleList(props: ArticleProps) {
 
   const [clickSearchButton, setClickSearchButton] = useState<boolean>(false)
 
-  // const [emptyFieldUserMessage, setEmptyFieldUserMessage] = useState<string>("")
+  // const [emptyFieldUserMessage, setEmptyFieldUserMessage] = useState<string>("Please enter something into the search field")
 
-  const searchInput = () => {
+  const handleSearchClick = () => {
     if (searchField === "") {
       alert("Please enter something into the search field")
       return
     }
-    setClickSearchButton(true)
+    setClickSearchButton(!clickSearchButton)
   }
   console.log(clickSearchButton)
 
   useEffect(
     () => {
-      // ! auf searchfield/selectLanguage zugreifen
       const fetchData = async () => {
         // const url = `${BASE_URL}&apiKey=${myAPI}`
         const url = `${BASE_URL}q=${searchField}&from=2025-08-15&sortBy=popularity&language=${selectLanguage}&apiKey=${myAPI}`
         const resp = await fetch(url)
         const respInJson = await resp.json()
         setData(respInJson.articles)
-        // setData(respInJson.articles)
         // console.log("respInJson", respInJson)
         // console.log("respInJson.articles", respInJson.articles)
       }
@@ -72,7 +70,7 @@ export default function ArticleList(props: ArticleProps) {
 
         <div className="flex flex-row justify-evenly gap-20 pl-4 pr-4">
           <input
-            className="flex-1 border bg-white p-2"
+            className="min-w-fit border bg-white p-2"
             type="text"
             value={searchField}
             placeholder=" Type to search..."
@@ -80,7 +78,7 @@ export default function ArticleList(props: ArticleProps) {
           />
 
           <select
-            className="flex-1 border bg-white p-2"
+            className="min-w-fit border bg-white p-2"
             value={selectLanguage}
             onChange={(event) => setSelectLanguage(event.target.value)}>
             <option value="" disabled>
@@ -106,7 +104,7 @@ export default function ArticleList(props: ArticleProps) {
         <button
           className="flex border-2 bg-gray-300 pt-2 pr-10 pb-2 pl-10 font-bold cursor-pointer
           hover:bg-black hover:border-2-gray-300 hover:text-gray-300"
-          onClick={searchInput}>
+          onClick={handleSearchClick}>
           Search
         </button>
       </div>
