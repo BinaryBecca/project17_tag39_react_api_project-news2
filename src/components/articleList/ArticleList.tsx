@@ -3,10 +3,7 @@ import type { IArticle } from "../../interfaces/IArticle"
 import ArticleItem from "../articleItem/ArticleItem"
 
 // Nutzt useEffect für den Fetch und einen useState um die Daten abzuspeichern
-
 // url: https://newsapi.org/v2/everything?
-
-// const BASE_URL = `https://newsapi.org/v2/everything?q=Apple&from=2025-08-15&sortBy=popularity&apiKey=${myAPI}`
 
 interface ArticleProps {
   article: IArticle[]
@@ -25,43 +22,49 @@ export default function ArticleList(props: ArticleProps) {
   const [searchField, setSearchField] = useState<string>("")
   const [selectLanguage, setSelectLanguage] = useState<string>("")
 
-  const [clickSearchButton, setClickSearchButton] = useState<boolean>(false)
-
-  // const [emptyFieldUserMessage, setEmptyFieldUserMessage] = useState<string>("Please enter something into the search field")
-
-  const handleSearchClick = () => {
-    if (searchField === "") {
-      alert("Please enter something into the search field")
-      return
+  const fetchData = async () => {
+    try {
+      const url = `${BASE_URL}q=${searchField}&from=2025-08-15&sortBy=popularity&language=${selectLanguage}&apiKey=${myAPI}`
+      const resp = await fetch(url)
+      const respInJson = await resp.json()
+      setData(respInJson.articles)
+    } catch (error) {
+      console.error("Articles could not load.", error)
     }
-    setClickSearchButton(!clickSearchButton)
+    // console.log("respInJson.articles", respInJson.articles)
   }
-  console.log(clickSearchButton)
+  useEffect(() => {
+    fetchData()
+  }, [])
 
-  useEffect(
-    () => {
-      const fetchData = async () => {
-        // const url = `${BASE_URL}&apiKey=${myAPI}`
-        const url = `${BASE_URL}q=${searchField}&from=2025-08-15&sortBy=popularity&language=${selectLanguage}&apiKey=${myAPI}`
-        const resp = await fetch(url)
-        const respInJson = await resp.json()
-        setData(respInJson.articles)
-        // console.log("respInJson", respInJson)
-        // console.log("respInJson.articles", respInJson.articles)
-      }
-      if (clickSearchButton) {
-        fetchData()
-        // console.log("FetchData:", fetchData())
-      }
-      // fetchData()
-      // !
-      // if (searchInput) {
-      //   fetchData()
-      // }
-    },
-    [clickSearchButton]
-    // [searchField, selectLanguage]
-  )
+  // #Variante 2:
+  // const [clickSearchButton, setClickSearchButton] = useState<boolean>(false)
+
+  // const handleSearchClick = () => {
+  //   if (searchField === "") {
+  //     alert("Please enter something into the search field")
+  //     return
+  //   }
+  //   setClickSearchButton(!clickSearchButton)
+  // }
+  // console.log(clickSearchButton)
+
+  // useEffect(
+  // const fetchData = async () => {
+  // try {
+  //   const url = `${BASE_URL}q=${searchField}&from=2025-08-15&sortBy=popularity&language=${selectLanguage}&apiKey=${myAPI}`
+  //   const resp = await fetch(url)
+  //   const respInJson = await resp.json()
+  //   setData(respInJson.articles)
+  // } catch (error) {
+  //   console.error("Articles could not load.", error)
+  // }
+  //   () => {
+  //     if (clickSearchButton) {
+  //       fetchData()
+  //   },
+  //   [clickSearchButton]
+  // )
 
   return (
     <>
@@ -104,11 +107,12 @@ export default function ArticleList(props: ArticleProps) {
         <button
           className="flex border-2 bg-gray-300 pt-2 pr-10 pb-2 pl-10 font-bold cursor-pointer
           hover:bg-black hover:border-2-gray-300 hover:text-gray-300"
-          onClick={handleSearchClick}>
+          onClick={fetchData}>
           Search
         </button>
       </div>
-
+      // #Variante 2:
+      {/* onClick={handleSearchClick} */}
       <div>
         {data ? (
           <>
